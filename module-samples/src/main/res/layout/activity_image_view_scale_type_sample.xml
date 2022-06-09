@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    tools:context="com.mcgrady.xproject.testing.samples.image.ImageViewScaleTypeActivity">
+    tools:context="com.mcgrady.xproject.samples.image.ImageViewScaleTypeActivity">
 
 
     <ImageView
@@ -22,12 +22,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:src="@mipmap/ic_colored_glaze_03_light"
         android:adjustViewBounds="true"
         android:background="@color/cardview_light_background"
         />
-
-
 
 <!--    <TextView-->
 <!--        android:layout_width="wrap_content"-->

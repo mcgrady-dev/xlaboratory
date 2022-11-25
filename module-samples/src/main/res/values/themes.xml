@@ -1,32 +1,21 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Xprojectmvvm" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
-
-        <!-- Apply default style for dialogs -->
-        <item name="android:dialogTheme">@style/AppDialogTheme</item>
-        <!-- Apply default style for alert dialogs -->
-        <item name="android:alertDialogTheme">@style/AppAlertTheme</item>
+    <!-- Base application theme. -->
+    <style name="Base.Theme.ModuleSample" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Theme.Xprojectmvvm.NoActionBar">
+    <style name="Theme.ModuleSample" parent="Base.Theme.ModuleSample" />
+
+    <style name="Theme.ModuleSample.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.Xprojectmvvm.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.ModuleSample.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="Theme.Xprojectmvvm.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Theme.ModuleSample.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <!-- Define your custom dialog theme here extending from base -->
     <style name="AppDialogTheme" parent="Theme.AppCompat.Light.Dialog">

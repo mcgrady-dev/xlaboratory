@@ -14,7 +14,8 @@ annotation class CacheKey(val keyName: String, val buckets: IntArray)
 
 @Cache(namespace = "hero", expires = 3600)
 data class Hero(
-    @CacheKey(keyName = "heroName", buckets = intArrayOf(1,2,3))
+    //@CacheKey(keyName = "heroName", buckets = intArrayOf(1,2,3))
+    @CacheKey(keyName = "heroName", buckets = [1, 2, 3])
     val name: String,
     val attack: Int,
     val defense: Int,

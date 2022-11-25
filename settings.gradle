@@ -13,7 +13,7 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "xlaboratory"
-include ':module-samples'
-include ':module-test'
 include ':module-kotlin-test'
+include ':module-java-test'
+include ':module-samples'
 include ':screen-match'

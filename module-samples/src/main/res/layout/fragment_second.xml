@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mcgrady.xproject.samples.jetpack.navigation.SecondFragment">
+    tools:context="com.mcgrady.xproject.samples.fragment.SecondFragment">
 
     <TextView
         android:id="@+id/textview_second"

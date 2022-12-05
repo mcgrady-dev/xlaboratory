@@ -1,26 +1,22 @@
 package com.mcgrady.xproject.samples.fragment
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.os.PersistableBundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
-import com.mcgrady.xproject.samples.MainActivity
 import com.mcgrady.xproject.samples.R
 import com.mcgrady.xproject.samples.lifecycle.ActivityLifecycleCallbacksImpl
 
-class FragmentSampleActivity : AppCompatActivity() {
+class SampleFragmentActivity : AppCompatActivity() {
 
     private lateinit var firstFragment: Fragment
     private lateinit var secondFragment: Fragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_fragment)
+        setContentView(R.layout.activity_sample_fragment)
 
         val btnAdd = findViewById<MaterialButton>(R.id.btn_add)
         val btnShow = findViewById<MaterialButton>(R.id.btn_show)

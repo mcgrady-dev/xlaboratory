@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">module-samples</string>
+    <string name="app_name">XLabs</string>
     <string name="title_activity_window_insets_controller">WindowInsetsControllerActivity</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -153,4 +153,9 @@
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
     <string name="title_activity_material3">Material3Activity</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_collapsing_toolbar_layout">CollapsingToolbarLayoutActivity</string>
 </resources>

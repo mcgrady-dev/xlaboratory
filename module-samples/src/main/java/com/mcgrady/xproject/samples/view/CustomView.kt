@@ -18,7 +18,6 @@ class CustomView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private var lastY: Float? = 0F
     private var lastX: Float? = 0F
 
-
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
 
         val widthSpecMode = MeasureSpec.getMode(widthMeasureSpec)

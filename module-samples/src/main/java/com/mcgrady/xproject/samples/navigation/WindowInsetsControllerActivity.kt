@@ -1,4 +1,4 @@
-package com.mcgrady.xproject.samples.fragment
+package com.mcgrady.xproject.samples.navigation
 
 import android.content.Intent
 import android.os.Build

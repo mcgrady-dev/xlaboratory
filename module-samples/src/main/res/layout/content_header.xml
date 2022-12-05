@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/tv_banner"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/top_background"
+        android:background="#323343"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_banner"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="horizontal" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_banner2"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        app:layout_constraintTop_toBottomOf="@id/rv_item"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tv_sort"
+        android:layout_marginStart="10dp"
+        app:layout_constraintHorizontal_weight="3"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:textAllCaps="true"
+        android:textStyle="italic|bold"
+        android:text="Banner 2"
+        android:layout_marginEnd="5dp"
+        android:background="@mipmap/animation_img3"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_sort"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintTop_toTopOf="@id/tv_banner2"
+        app:layout_constraintStart_toEndOf="@id/tv_banner2"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="5dp"
+        android:textAllCaps="true"
+        android:textStyle="italic|bold"
+        android:textSize="24sp"
+        android:gravity="center"
+        android:text="Sort"
+        android:background="@mipmap/click_head_img_0"/>
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_events"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        app:layout_constraintTop_toBottomOf="@id/tv_banner2"
+        app:layout_constraintStart_toStartOf="@id/tv_banner2"
+        app:layout_constraintEnd_toStartOf="@id/tv_shopping"
+        android:layout_marginTop="10dp"
+        app:layout_constraintHorizontal_weight="1"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:textAllCaps="true"
+        android:textStyle="italic|bold"
+        android:text="Events"
+        android:layout_marginEnd="5dp"
+        android:background="@mipmap/m_img1"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_shopping"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintTop_toTopOf="@id/tv_events"
+        app:layout_constraintStart_toEndOf="@id/tv_events"
+        app:layout_constraintEnd_toEndOf="@id/tv_sort"
+        android:layout_marginStart="5dp"
+        android:textAllCaps="true"
+        android:textStyle="italic|bold"
+        android:textSize="24sp"
+        android:gravity="center"
+        android:text="Shopping"
+        android:background="@mipmap/m_img2"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_events2"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        app:layout_constraintTop_toBottomOf="@id/tv_events"
+        app:layout_constraintStart_toStartOf="@id/tv_banner2"
+        app:layout_constraintEnd_toStartOf="@id/tv_shopping2"
+        android:layout_marginTop="10dp"
+        app:layout_constraintHorizontal_weight="1"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:textAllCaps="true"
+        android:textStyle="italic|bold"
+        android:text="Events 2"
+        android:layout_marginEnd="5dp"
+        android:background="@mipmap/m_img2"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_shopping2"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintTop_toTopOf="@id/tv_events2"
+        app:layout_constraintStart_toEndOf="@id/tv_events2"
+        app:layout_constraintEnd_toEndOf="@id/tv_sort"
+        android:layout_marginStart="5dp"
+        android:textAllCaps="true"
+        android:textStyle="italic|bold"
+        android:textSize="24sp"
+        android:gravity="center"
+        android:text="Shopping 2"
+        android:background="@mipmap/m_img1"/>
+
+    <LinearLayout
+        android:id="@+id/ll_toolbar_holder"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/tv_events2"
+        android:layout_marginTop="6dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:gravity="center_vertical">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/community_tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:text="TitleBar"
+            android:layout_marginRight="6dp"/>
+
+        <Space
+            android:id="@+id/tv_search"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/community_energy_count_view"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="8dp"
+            android:gravity="center_vertical"
+            android:src="@mipmap/head_img"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

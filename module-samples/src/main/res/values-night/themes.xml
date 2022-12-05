@@ -39,4 +39,9 @@
         <item name="colorControlNormal">@android:color/holo_blue_dark</item>
         <item name="android:textColorHighlight">@android:color/holo_blue_light</item>
     </style>
+
+    <style name="ThemeOverlay.Xlaboratory.FullscreenContainer" parent="">
+        <item name="fullscreenBackgroundColor">@color/light_blue_900</item>
+        <item name="fullscreenTextColor">@color/light_blue_A400</item>
+    </style>
 </resources>

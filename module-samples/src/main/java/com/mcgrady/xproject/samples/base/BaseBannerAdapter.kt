@@ -9,7 +9,7 @@ import com.mcgrady.xproject.samples.view.BannerView.Companion.DEFAULT_INCREASE_C
  */
 abstract class BaseBannerAdapter<T, VH : RecyclerView.ViewHolder>(open val originList: List<T>) :
     BaseAdapter<T, VH>(
-        if (originList.isNotEmpty()) listOf(originList.first()) + originList + listOf(
-            originList.last()
+        if (originList.isNotEmpty()) listOf(originList.last()) + originList + listOf(
+            originList.first()
         ) else originList
     )

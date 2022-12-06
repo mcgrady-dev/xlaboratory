@@ -1,6 +1,7 @@
 package com.mcgrady.xproject.samples.view
 
 import android.content.Context
+import android.os.Build
 import android.util.AttributeSet
 import android.util.Log
 import android.view.ViewConfiguration
@@ -9,6 +10,7 @@ import android.widget.FrameLayout
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.ORIENTATION_HORIZONTAL
@@ -27,6 +29,7 @@ class BannerView<T, BA : BaseAdapter<T, RecyclerView.ViewHolder>> @JvmOverloads 
     defStyle: Int = 0
 ) : FrameLayout(context, attributeSet, defStyle), DefaultLifecycleObserver {
 
+    private var currentPosition: Int = 0
     private var viewPager: ViewPager2
     var adapter: BA? = null
         set(value) {
@@ -49,6 +52,7 @@ class BannerView<T, BA : BaseAdapter<T, RecyclerView.ViewHolder>> @JvmOverloads 
     private var onPageChangeCallback: OnPageChangeCallback? = null
     private var compositePageTransformer: CompositePageTransformer
 
+    private var isDragging = false
     var isPolling: Boolean = false
     private var autoPlay: Boolean = false
     private var looper: Looper<T, BA>
@@ -174,15 +178,17 @@ class BannerView<T, BA : BaseAdapter<T, RecyclerView.ViewHolder>> @JvmOverloads 
             val bannerView: BannerView<T, BA>? = reference.get()
             bannerView?.let {
                 if (it.autoPlay) {
-                    val count: Int = bannerView.adapter?.itemCount ?: 0
+                    val count: Int = it.adapter?.itemCount ?: 0
                     if (count == 0) {
                         return
                     }
-                    val next: Int = (bannerView.getCurrentItem() + 1) % count
-                    Log.d("AutoPlay", "currentItem=${bannerView.getCurrentItem()} count=$count next=$next")
-                    val currentItem = bannerView.getCurrentItem() + 1
-                    bannerView.setCurrentItem(currentItem)
-                    bannerView.postDelayed(bannerView.looper, bannerView.intervalTime)
+                    val next: Int = (it.getCurrentItem() + 1) % count
+                    Log.d(TAG, "looper: next：${it.getCurrentItem()}+1%${count}=$next")
+                    it.setCurrentItem(next)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        Log.d(TAG, "looper: hasCallbacks=${it.handler.hasCallbacks(this)}")
+                    }
+                    it.postDelayed(it.looper, it.intervalTime)
                 }
             }
         }
@@ -204,110 +210,43 @@ class BannerView<T, BA : BaseAdapter<T, RecyclerView.ViewHolder>> @JvmOverloads 
 
     inner class OnBannerPageChangeCallback : OnPageChangeCallback() {
 
-        override fun onPageScrolled(
-            position: Int,
-            positionOffset: Float,
-            positionOffsetPixels: Int
-        ) {
-//            val size = adapter?.items?.size ?: 0
-//            if (position == size - 1) {
-//                viewPager.setCurrentItem(1, false)
-//            } else if (position == 0) {
-//                viewPager.setCurrentItem(size - 2, false)
-//            }
-            super.onPageScrolled(position, positionOffset, positionOffsetPixels)
-        }
-
         override fun onPageScrollStateChanged(state: Int) {
             super.onPageScrollStateChanged(state)
-            if (state == ViewPager2.SCROLL_STATE_IDLE || state == ViewPager2.SCROLL_STATE_DRAGGING) {
-                val currentItem = viewPager.currentItem
-                val size = adapter?.items?.size ?: 0
+            Log.d(TAG, "onPageScrollStateChanged: state=$state")
+            when (state) {
+                ViewPager2.SCROLL_STATE_IDLE -> {
+                    val currentItem = viewPager.currentItem
+                    val size = adapter?.items?.size ?: 0
 
-                when (currentItem) {
-                    size - 1 -> viewPager.setCurrentItem(1, false)
-                    0 -> viewPager.setCurrentItem(size - 2, false)
+                    when (currentItem) {
+                        size - 1 -> viewPager.setCurrentItem(1, false)
+                        0 -> viewPager.setCurrentItem(size - 2, false)
+                    }
+
+                    if (isDragging) {
+                        isDragging = false
+                        startPolling()
+                    }
                 }
-
-//                if (currentItem == 1) {
-//                    viewPager.setCurrentItem(size - 3, false)
-//                } else if (currentItem == size - 2) {
-//                    viewPager.setCurrentItem(2, false)
-//                }
+                ViewPager.SCROLL_STATE_DRAGGING -> {
+                    if (autoPlay) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            Log.d(TAG, "onPageScrollStateChanged: hasCallbacks=${handler.hasCallbacks(looper)}")
+                            if (handler.hasCallbacks(looper)) {
+                                handler.removeCallbacks(looper)
+                                isDragging = true
+                            }
+                        }
+                    }
+                }
+                else -> {}
             }
-        }
-
-        override fun onPageSelected(position: Int) {
-            super.onPageSelected(position)
         }
     }
 
-//    inner class OnBannerPageChangeCallback : OnPageChangeCallback() {
-//        private var mTempPosition: Int = -1
-//        private var isScrolled = false
-//        override fun onPageScrolled(
-//            position: Int,
-//            positionOffset: Float,
-//            positionOffsetPixels: Int
-//        ) {
-//            val realPosition: Int = getRealPosition(isPolling, position, getRealCount())
-//            if (realPosition == getCurrentItem() - 1) {
-//                onPageChangeCallback?.onPageScrolled(
-//                    realPosition,
-//                    positionOffset,
-//                    positionOffsetPixels
-//                )
-//            }
-//            /*if (getIndicator() != null && realPosition == getCurrentItem() - 1) {
-//                getIndicator().onPageScrolled(realPosition, positionOffset, positionOffsetPixels)
-//            }*/
-//        }
-//
-//        override fun onPageSelected(position: Int) {
-//            if (isScrolled) {
-//                mTempPosition = position
-//                val realPosition: Int = getRealPosition(isPolling, position, getRealCount())
-//                onPageChangeCallback?.onPageSelected(realPosition)
-//                /*if (getIndicator() != null) {
-//                    getIndicator().onPageSelected(realPosition)
-//                }*/
-//            }
-//        }
-//
-//        override fun onPageScrollStateChanged(state: Int) {
-//            //手势滑动中,代码执行滑动中
-//            if (state == ViewPager2.SCROLL_STATE_DRAGGING || state == ViewPager2.SCROLL_STATE_SETTLING) {
-//                isScrolled = true
-//            } else if (state == ViewPager2.SCROLL_STATE_IDLE) {
-//                //滑动闲置或滑动结束
-//                isScrolled = false
-//                if (mTempPosition != INVALID_VALUE && isPolling) {
-//                    if (mTempPosition == 0) {
-//                        setCurrentItem(getRealCount(), false)
-//                    } else if (mTempPosition == getItemCount() - 1) {
-//                        setCurrentItem(1, false)
-//                    }
-//                }
-//            }
-//            onPageChangeCallback?.onPageScrollStateChanged(state)
-//
-//            /*if (getIndicator() != null) {
-//                getIndicator().onPageScrollStateChanged(state)
-//            }*/
-//        }
-//    }
-
     companion object {
-//        fun getRealPosition(isPolling: Boolean, position: Int, realCount: Int): Int {
-//            return if (isPolling) {
-//                position
-//            } else when(position) {
-//                0 -> realCount - 1
-//                (realCount + 1) -> 0
-//                else -> position - 1
-//            }
-//        }
 
+        const val TAG = "BannerView"
         const val INVALID_VALUE = -1
         const val DEFAULT_INTERVAL_TIME = 3000
         const val DEFAULT_AUTO_PLAY = true

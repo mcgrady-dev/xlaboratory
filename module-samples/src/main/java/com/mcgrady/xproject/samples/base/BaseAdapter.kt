@@ -11,7 +11,7 @@ import androidx.annotation.IntRange
  */
 abstract class BaseAdapter<T, VH: RecyclerView.ViewHolder>(open var items: List<T> = emptyList()) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var onItemClickListener: OnItemClickListener<T>? = null
+    protected var onItemClickListener: OnItemClickListener<T>? = null
 
     final override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return onCreateViewHolder(parent.context, parent, viewType).apply {
@@ -70,7 +70,7 @@ abstract class BaseAdapter<T, VH: RecyclerView.ViewHolder>(open var items: List<
         notifyDataSetChanged()
     }
 
-    fun getItem(@IntRange(from = 0) position: Int): T? = items.getOrNull(position)
+    open fun getItem(@IntRange(from = 0) position: Int): T? = items.getOrNull(position)
 
     override fun getItemViewType(position: Int): Int {
         return getItemViewType(position, items)

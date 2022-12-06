@@ -3,4 +3,49 @@
         <attr name="fullscreenBackgroundColor" format="color" />
         <attr name="fullscreenTextColor" format="color" />
     </declare-styleable>
+
+    <declare-styleable name="BannerView">
+        <attr name="interval_time" format="integer" />
+        <attr name="autoplay" format="boolean" />
+        <attr name="is_polling" format="boolean" />
+
+        <!--RoundLinesIndicator、RectangleIndicator-->
+        <attr name="indicator_height" format="dimension"/>
+        <attr name="indicator_radius" format="dimension"/>
+
+        <!-- 以下为公用属性 -->
+        <attr name="indicator_selected_width" format="dimension"/>
+        <!--CircleIndicator-->
+        <attr name="indicator_normal_width" format="dimension"/>
+        <attr name="indicator_space" format="dimension"/>
+
+        <attr name="indicator_normal_color" format="reference|color"/>
+        <attr name="indicator_selected_color" format="reference|color"/>
+        <attr name="indicator_margin" format="dimension"/>
+        <attr name="indicator_marginLeft" format="dimension"/>
+        <attr name="indicator_marginTop" format="dimension"/>
+        <attr name="indicator_marginRight" format="dimension"/>
+        <attr name="indicator_marginBottom" format="dimension"/>
+
+        <attr name="indicator_gravity" format="enum">
+            <enum name="left" value="0" />
+            <enum name="center" value="1" />
+            <enum name="right" value="2" />
+        </attr>
+
+        <attr name="orientation">
+            <enum name="horizontal" value="0" />
+            <enum name="vertical" value="1" />
+        </attr>
+
+        <attr name="radius" format="dimension"/>
+
+        <!--设置需要圆角的方向，不设置默认全部设置-->
+        <attr name="round_top_left" format="boolean"/>
+        <attr name="round_top_right" format="boolean"/>
+        <attr name="round_bottom_left" format="boolean"/>
+        <attr name="round_bottom_right" format="boolean"/>
+
+    </declare-styleable>
+
 </resources>

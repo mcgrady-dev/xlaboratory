@@ -12,13 +12,20 @@
         app:layout_constraintTop_toTopOf="parent"
         android:scaleType="centerCrop"
         android:src="@mipmap/top_background"
-        android:background="#323343"/>
+        android:background="#323343"
+        android:visibility="gone"/>
+
+    <com.mcgrady.xproject.samples.view.BannerView
+        android:id="@+id/banner_view"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tv_banner"
+        app:layout_constraintTop_toBottomOf="@id/banner_view"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:orientation="horizontal" />
 

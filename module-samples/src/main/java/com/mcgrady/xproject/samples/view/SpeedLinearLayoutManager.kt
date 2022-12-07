@@ -9,15 +9,15 @@ import androidx.viewpager2.widget.ViewPager2
 /**
  * Created by mcgrady on 2022/12/6.
  */
-class SpeedLinearLayoutManager(context: Context, var intervalTime: Int, orientation: Int) :
+class SpeedLinearLayoutManager(context: Context, var scrollTime: Int, orientation: Int) :
     LinearLayoutManager(context, orientation, false) {
 
     private val linearSmoothScroller: LinearSmoothScroller
 
     init {
-        linearSmoothScroller = object: LinearSmoothScroller(context) {
+        linearSmoothScroller = object : LinearSmoothScroller(context) {
             override fun calculateTimeForDeceleration(dx: Int): Int {
-                return intervalTime
+                return scrollTime
             }
         }
     }
@@ -39,12 +39,13 @@ class SpeedLinearLayoutManager(context: Context, var intervalTime: Int, orientat
                     recyclerView.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
                     val orientation =
                         (recyclerView.layoutManager as LinearLayoutManager?)?.orientation
-                            ?: HORIZONTAL
+                            ?: ViewPager2.ORIENTATION_HORIZONTAL
 
                     val layoutManager =
                         SpeedLinearLayoutManager(pager.context, intervalTimeMillis, orientation)
 
                     recyclerView.layoutManager = layoutManager
+                    recyclerView.isNestedScrollingEnabled = false
 
                     val layoutMangerField =
                         ViewPager2::class.java.getDeclaredField("mLayoutManager")
@@ -72,7 +73,7 @@ class SpeedLinearLayoutManager(context: Context, var intervalTime: Int, orientat
                     }
                 }
             } catch (e: Exception) {
-               e.printStackTrace()
+                e.printStackTrace()
             }
         }
     }

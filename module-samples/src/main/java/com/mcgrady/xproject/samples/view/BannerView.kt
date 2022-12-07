@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.util.AttributeSet
 import android.util.Log
+import android.view.MotionEvent
 import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -19,6 +20,7 @@ import androidx.viewpager2.widget.ViewPager2.Orientation
 import com.mcgrady.xproject.samples.R
 import com.mcgrady.xproject.samples.base.BaseAdapter
 import java.lang.ref.WeakReference
+import kotlin.math.abs
 
 /**
  * Created by mcgrady on 2022/12/6.
@@ -29,7 +31,6 @@ class BannerView<T, BA : BaseAdapter<T, RecyclerView.ViewHolder>> @JvmOverloads 
     defStyle: Int = 0
 ) : FrameLayout(context, attributeSet, defStyle), DefaultLifecycleObserver {
 
-    private var currentPosition: Int = 0
     private var viewPager: ViewPager2
     var adapter: BA? = null
         set(value) {
@@ -37,12 +38,16 @@ class BannerView<T, BA : BaseAdapter<T, RecyclerView.ViewHolder>> @JvmOverloads 
                 return
             }
 
+            val newList = createLoopFakeData(value.items) ?: emptyList()
+            value.items = newList
+
             value.registerAdapterDataObserver(adapterDataObserver)
             viewPager.adapter = value
             viewPager.setCurrentItem(1, false)
             field = value
         }
-    @Orientation var orientation: Int = ORIENTATION_HORIZONTAL
+    @Orientation
+    var orientation: Int = ORIENTATION_HORIZONTAL
         set(value) {
             viewPager.orientation = value
             field = value
@@ -52,18 +57,29 @@ class BannerView<T, BA : BaseAdapter<T, RecyclerView.ViewHolder>> @JvmOverloads 
     private var onPageChangeCallback: OnPageChangeCallback? = null
     private var compositePageTransformer: CompositePageTransformer
 
-    private var isDragging = false
-    var isPolling: Boolean = false
+    private var isLoop: Boolean = DEFAULT_IS_LOOP
+        set(value) {
+            field = value
+            if (!value) {
+                autoPlay = false
+            }
+        }
     private var autoPlay: Boolean = false
     private var looper: Looper<T, BA>
     private var intervalTime: Long = DEFAULT_INTERVAL_TIME.toLong()
+
+    var scrollTime = DEFAULT_SCROLL_TIME
         set(value) {
             field = value
             val layoutManager = getLayoutManager()
             if (layoutManager is SpeedLinearLayoutManager) {
-                layoutManager.intervalTime = value.toInt()
+                layoutManager.scrollTime = value
             }
         }
+    private var isIntercept: Boolean = true
+    private var isViewPagerDragging = false
+    private var startX: Float = 0F
+    private var startY: Float = 0F
 
     init {
         touchSlop = ViewConfiguration.get(context).scaledTouchSlop / 2
@@ -79,18 +95,14 @@ class BannerView<T, BA : BaseAdapter<T, RecyclerView.ViewHolder>> @JvmOverloads 
             registerOnPageChangeCallback(defaultOnPageChangeCallback)
             setPageTransformer(compositePageTransformer)
         }
-//        if (intervalTime >= 100) {
-//            SpeedLinearLayoutManager.invoke(viewPager, intervalTime.toInt())
-//        }
+        if (intervalTime >= 100) {
+            SpeedLinearLayoutManager.invoke(viewPager, scrollTime)
+        }
         viewPager.currentItem = 1
         addView(viewPager)
 
         attributeSet?.let { attrs ->
             initAttribute(attrs, defStyle)
-        }
-
-        if (!isPolling) {
-            autoPlay = false
         }
     }
 
@@ -98,9 +110,10 @@ class BannerView<T, BA : BaseAdapter<T, RecyclerView.ViewHolder>> @JvmOverloads 
         val attributes =
             context.obtainStyledAttributes(attrs, R.styleable.BannerView, defStyle, 0)
 
-        intervalTime = attributes.getInt(R.styleable.BannerView_interval_time, DEFAULT_INTERVAL_TIME).toLong()
+        intervalTime =
+            attributes.getInt(R.styleable.BannerView_interval_time, DEFAULT_INTERVAL_TIME).toLong()
         autoPlay = attributes.getBoolean(R.styleable.BannerView_autoplay, DEFAULT_AUTO_PLAY)
-        isPolling = attributes.getBoolean(R.styleable.BannerView_is_polling, DEFAULT_IS_POLLING)
+        isLoop = attributes.getBoolean(R.styleable.BannerView_is_polling, DEFAULT_IS_LOOP)
         orientation = attributes.getInt(R.styleable.BannerView_orientation, ORIENTATION_HORIZONTAL)
         attributes.recycle()
     }
@@ -124,8 +137,17 @@ class BannerView<T, BA : BaseAdapter<T, RecyclerView.ViewHolder>> @JvmOverloads 
     }
 
     fun submitList(list: List<T>?) {
-        adapter?.submitList(list)
+        val newList = createLoopFakeData(list)
+        adapter?.submitList(newList)
         startPolling()
+    }
+
+    private fun createLoopFakeData(originList: List<T>?):List<T>? {
+        if (originList == null || originList.isEmpty()) {
+            return originList
+        }
+
+        return listOf(originList.last()) + originList + listOf(originList.first())
     }
 
     fun startPolling() {
@@ -152,7 +174,7 @@ class BannerView<T, BA : BaseAdapter<T, RecyclerView.ViewHolder>> @JvmOverloads 
         adapter?.setOnItemClickListener(listener)
     }
 
-    fun addOnPageChangeCallback(listener: OnPageChangeCallback) {
+    fun addOnPageChangeCallback(listener: OnPageChangeCallback?) {
         onPageChangeCallback = listener
     }
 
@@ -164,10 +186,11 @@ class BannerView<T, BA : BaseAdapter<T, RecyclerView.ViewHolder>> @JvmOverloads 
         compositePageTransformer.removeTransformer(transformer)
     }
 
-    private fun getLayoutManager(): RecyclerView.LayoutManager?
-        = (viewPager.getChildAt(0) as RecyclerView?)?.layoutManager
+    private fun getLayoutManager(): RecyclerView.LayoutManager? =
+        (viewPager.getChildAt(0) as RecyclerView?)?.layoutManager
 
-    internal class Looper<T, BA: BaseAdapter<T, RecyclerView.ViewHolder>>(bannerView: BannerView<T, BA>) : Runnable {
+    internal class Looper<T, BA : BaseAdapter<T, RecyclerView.ViewHolder>>(bannerView: BannerView<T, BA>) :
+        Runnable {
         private val reference: WeakReference<BannerView<T, BA>>
 
         init {
@@ -185,16 +208,13 @@ class BannerView<T, BA : BaseAdapter<T, RecyclerView.ViewHolder>> @JvmOverloads 
                     val next: Int = (it.getCurrentItem() + 1) % count
                     Log.d(TAG, "looper: next：${it.getCurrentItem()}+1%${count}=$next")
                     it.setCurrentItem(next)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        Log.d(TAG, "looper: hasCallbacks=${it.handler.hasCallbacks(this)}")
-                    }
                     it.postDelayed(it.looper, it.intervalTime)
                 }
             }
         }
     }
 
-    private val adapterDataObserver = object: RecyclerView.AdapterDataObserver() {
+    private val adapterDataObserver = object : RecyclerView.AdapterDataObserver() {
         override fun onChanged() {
             if (getItemCount() <= 1) {
                 stopPolling()
@@ -208,39 +228,100 @@ class BannerView<T, BA : BaseAdapter<T, RecyclerView.ViewHolder>> @JvmOverloads 
         owner.lifecycle.addObserver(this)
     }
 
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        if (viewPager.isUserInputEnabled) {
+            when (ev?.actionMasked) {
+                MotionEvent.ACTION_UP or MotionEvent.ACTION_CANCEL or MotionEvent.ACTION_OUTSIDE -> {
+                    startPolling()
+                }
+                MotionEvent.ACTION_DOWN -> {
+                    stopPolling()
+                }
+                else -> {}
+            }
+        }
+        return super.dispatchTouchEvent(ev)
+    }
+
+    override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
+        if (viewPager.isUserInputEnabled && isIntercept) {
+            when (ev?.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    startX = ev.x
+                    startY = ev.y
+                    parent.requestDisallowInterceptTouchEvent(true)
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    val endX = ev.x
+                    val endY = ev.y
+                    val distanceX = abs(endX - startX)
+                    val distanceY = abs(endY - startY)
+                    isViewPagerDragging = if (viewPager.orientation == ORIENTATION_HORIZONTAL) {
+                        distanceX > touchSlop && distanceX > distanceY
+                    } else {
+                        distanceY > touchSlop && distanceY > distanceX
+                    }
+                    parent.requestDisallowInterceptTouchEvent(isViewPagerDragging)
+                }
+                MotionEvent.ACTION_UP or MotionEvent.ACTION_CANCEL -> {
+                    parent.requestDisallowInterceptTouchEvent(false)
+                }
+                else -> {}
+            }
+        }
+        return super.onInterceptTouchEvent(ev)
+    }
+
     inner class OnBannerPageChangeCallback : OnPageChangeCallback() {
+
+        private var isDragging = false
+
+        override fun onPageScrolled(
+            position: Int,
+            positionOffset: Float,
+            positionOffsetPixels: Int
+        ) {
+            Log.d(TAG, "onPageScrolled: position=$position, positionOffset=$positionOffset, positionOffsetPixels=$positionOffsetPixels")
+            onPageChangeCallback?.onPageScrolled(position, positionOffset, positionOffsetPixels)
+        }
+
+        override fun onPageSelected(position: Int) {
+            onPageChangeCallback?.onPageSelected(position)
+        }
 
         override fun onPageScrollStateChanged(state: Int) {
             super.onPageScrollStateChanged(state)
             Log.d(TAG, "onPageScrollStateChanged: state=$state")
-            when (state) {
-                ViewPager2.SCROLL_STATE_IDLE -> {
-                    val currentItem = viewPager.currentItem
-                    val size = adapter?.items?.size ?: 0
 
-                    when (currentItem) {
-                        size - 1 -> viewPager.setCurrentItem(1, false)
-                        0 -> viewPager.setCurrentItem(size - 2, false)
-                    }
+            if (state == ViewPager2.SCROLL_STATE_IDLE) {
+                val currentItem = viewPager.currentItem
+                val size = adapter?.items?.size ?: 0
 
-                    if (isDragging) {
-                        isDragging = false
-                        startPolling()
-                    }
+                when (currentItem) {
+                    size - 1 -> viewPager.setCurrentItem(1, false)
+                    0 -> viewPager.setCurrentItem(size - 2, false)
                 }
-                ViewPager.SCROLL_STATE_DRAGGING -> {
-                    if (autoPlay) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            Log.d(TAG, "onPageScrollStateChanged: hasCallbacks=${handler.hasCallbacks(looper)}")
-                            if (handler.hasCallbacks(looper)) {
-                                handler.removeCallbacks(looper)
-                                isDragging = true
-                            }
+
+                if (isDragging) {
+                    isDragging = false
+                    startPolling()
+                }
+            } else if (state == ViewPager.SCROLL_STATE_DRAGGING) {
+                if (autoPlay) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        Log.d(
+                            TAG,
+                            "onPageScrollStateChanged: hasCallbacks=${handler.hasCallbacks(looper)}"
+                        )
+                        if (handler.hasCallbacks(looper)) {
+                            handler.removeCallbacks(looper)
+                            isDragging = true
                         }
                     }
                 }
-                else -> {}
             }
+
+            onPageChangeCallback?.onPageScrollStateChanged(state)
         }
     }
 
@@ -248,13 +329,10 @@ class BannerView<T, BA : BaseAdapter<T, RecyclerView.ViewHolder>> @JvmOverloads 
 
         const val TAG = "BannerView"
         const val INVALID_VALUE = -1
-        const val DEFAULT_INTERVAL_TIME = 3000
+        const val DEFAULT_INTERVAL_TIME = 3500
         const val DEFAULT_AUTO_PLAY = true
-        const val DEFAULT_IS_POLLING = true
+        const val DEFAULT_IS_LOOP = true
         const val DEFAULT_INCREASE_COUNT = 2
+        const val DEFAULT_SCROLL_TIME = 650
     }
-}
-
-inline fun invokeLayoutManager() {
-
 }

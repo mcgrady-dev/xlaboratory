@@ -11,7 +11,25 @@ import androidx.annotation.IntRange
  */
 abstract class BaseAdapter<T, VH: RecyclerView.ViewHolder>(open var items: List<T> = emptyList()) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    private var _recyclerView: RecyclerView? = null
+    val recyclerView: RecyclerView
+        get() {
+            checkNotNull(_recyclerView) {
+                "Please get it after onAttachedToRecyclerView()"
+            }
+            return _recyclerView!!
+        }
     protected var onItemClickListener: OnItemClickListener<T>? = null
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        _recyclerView = recyclerView
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        _recyclerView = null
+    }
 
     final override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return onCreateViewHolder(parent.context, parent, viewType).apply {

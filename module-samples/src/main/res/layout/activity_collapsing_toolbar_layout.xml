@@ -109,7 +109,7 @@
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
@@ -119,6 +119,7 @@
         android:layout_marginBottom="@dimen/fab_margin"
         app:layout_anchor="@id/pager"
         app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@android:drawable/arrow_up_float" />
+        app:srcCompat="@android:drawable/arrow_up_float"
+        android:scaleType="center"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

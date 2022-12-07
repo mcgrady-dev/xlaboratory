@@ -1,7 +1,8 @@
 package com.mcgrady.xproject.samples.data
 
-import com.mcgrady.xproject.samples.base.BannerEntity
+import com.mcgrady.xproject.samples.entity.BannerEntity
 import com.mcgrady.xproject.samples.base.MultiItemEntity
+import com.mcgrady.xproject.samples.entity.BannerItemEntity
 import com.mcgrady.xproject.samples.entity.FeatureItemEntity
 import com.mcgrady.xproject.samples.entity.NewsItemEntity
 import com.mcgrady.xproject.samples.util.Utils
@@ -11,11 +12,16 @@ import com.mcgrady.xproject.samples.util.Utils
  */
 object DataServer {
 
-    fun getSampleMultiData(lenth: Int): List<MultiItemEntity> {
+    fun getSampleMultiData(length: Int): List<MultiItemEntity> {
         val list = mutableListOf<MultiItemEntity>()
-        for (i in 0..lenth) {
+        for (i in 0..length) {
             list.add(NewsItemEntity())
-            list.add(FeatureItemEntity())
+            list.add(NewsItemEntity())
+            if (i % 2 == 0) {
+                list.add(BannerItemEntity(data = getSampleBannerData(3)))
+            } else {
+                list.add(FeatureItemEntity())
+            }
         }
         return list
     }

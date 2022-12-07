@@ -7,6 +7,7 @@ import com.mcgrady.xproject.samples.view.BannerView.Companion.DEFAULT_INCREASE_C
 /**
  * Created by mcgrady on 2022/12/6.
  */
+@Deprecated("Use the BaseAdapter")
 abstract class BaseBannerAdapter<T, VH : RecyclerView.ViewHolder>(open val originList: List<T>) :
     BaseAdapter<T, VH>(
         if (originList.isNotEmpty()) listOf(originList.last()) + originList + listOf(

@@ -6,34 +6,15 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.mcgrady.xproject.samples.base.BannerEntity
+import com.mcgrady.xproject.samples.base.BaseAdapter
+import com.mcgrady.xproject.samples.entity.BannerEntity
 import com.mcgrady.xproject.samples.base.BaseBannerAdapter
 import com.mcgrady.xproject.samples.drawable.TextDrawable
 
 /**
  * Created by mcgrady on 2022/12/6.
  */
-class SampleBannerAdapter(override val originList: List<BannerEntity> = emptyList()) :
-    BaseBannerAdapter<BannerEntity, SampleBannerAdapter.ViewHolder>(originList) {
-
-    /*override fun onCreateViewHolder(
-        context: Context,
-        parent: ViewGroup,
-        viewType: Int
-    ): SampleBannerAdapter.ViewHolder {
-        val imageView = AppCompatImageView(parent.context).apply {
-            layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-            scaleType = ImageView.ScaleType.CENTER_CROP
-        }
-        return ViewHolder(imageView)
-    }
-
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, item: BannerEntity?) {
-        item?.let {
-            holder.imageView.setImageDrawable(it)
-        }
-    }*/
-
+class SampleBannerAdapter(override var items: List<BannerEntity>) : BaseAdapter<BannerEntity, SampleBannerAdapter.ViewHolder>(items) {
 
     override fun onCreateViewHolder(
         context: Context,

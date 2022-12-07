@@ -3,6 +3,7 @@ package com.mcgrady.xproject.samples.adapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.mcgrady.xproject.samples.R
 import com.mcgrady.xproject.samples.base.BaseMultiItemAdapter
@@ -11,6 +12,9 @@ import com.mcgrady.xproject.samples.entity.FeatureItemEntity
 import com.mcgrady.xproject.samples.entity.NewsItemEntity
 import com.mcgrady.xproject.samples.databinding.ItemFeatureViewBinding
 import com.mcgrady.xproject.samples.databinding.ItemNewsViewBinding
+import com.mcgrady.xproject.samples.databinding.ItemViewBannerBinding
+import com.mcgrady.xproject.samples.entity.BannerItemEntity
+import com.mcgrady.xproject.samples.entity.BannerItemEntity.Companion.ITEM_BANNER
 import com.mcgrady.xproject.samples.entity.FeatureItemEntity.Companion.ITEM_FEATURE
 import com.mcgrady.xproject.samples.entity.NewsItemEntity.Companion.ITEM_NEWS
 
@@ -50,6 +54,22 @@ class SampleMultipleItemAdapter(data: List<MultiItemEntity>) : BaseMultiItemAdap
                     holder.bindTo(item)
                 }
             }
+        }).addItemType(ITEM_BANNER, object : OnMultiItemAdapterListener<MultiItemEntity, BannerViewHolder> {
+            override fun onCreate(
+                context: Context,
+                parent: ViewGroup,
+                viewType: Int
+            ): BannerViewHolder {
+                val binding = ItemViewBannerBinding.inflate(LayoutInflater.from(context), parent, false)
+                return BannerViewHolder(binding)
+            }
+
+            override fun onBind(holder: BannerViewHolder, position: Int, item: MultiItemEntity?) {
+                item?.let {
+                    holder.bindTo(it as BannerItemEntity)
+                }
+            }
+
         }).onItemViewType { position, list -> list[position].itemType }
     }
 
@@ -70,6 +90,15 @@ class SampleMultipleItemAdapter(data: List<MultiItemEntity>) : BaseMultiItemAdap
                 2 -> binding.iv.setImageResource(R.mipmap.animation_img3)
                 else -> {}
             }
+        }
+    }
+
+    private inner class BannerViewHolder(val binding: ItemViewBannerBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bindTo(item: BannerItemEntity) {
+            recyclerView.findViewTreeLifecycleOwner()?.let { owner ->
+                binding.bannerView.addLifecycleObserver(owner)
+            }
+            binding.bannerView.adapter = SampleBannerAdapter(item.data)
         }
     }
 

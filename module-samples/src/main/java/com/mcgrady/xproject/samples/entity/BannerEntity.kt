@@ -1,4 +1,4 @@
-package com.mcgrady.xproject.samples.base
+package com.mcgrady.xproject.samples.entity
 
 /**
  * Created by mcgrady on 2022/12/6.

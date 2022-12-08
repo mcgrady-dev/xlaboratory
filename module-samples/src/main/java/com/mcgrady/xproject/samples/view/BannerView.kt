@@ -31,6 +31,7 @@ class BannerView<T, BA : BaseAdapter<T, RecyclerView.ViewHolder>> @JvmOverloads 
     defStyle: Int = 0
 ) : FrameLayout(context, attributeSet, defStyle), DefaultLifecycleObserver {
 
+    private var startPosition: Int = DEFAULT_START_POSITION
     private var viewPager: ViewPager2
     var adapter: BA? = null
         set(value) {
@@ -43,7 +44,7 @@ class BannerView<T, BA : BaseAdapter<T, RecyclerView.ViewHolder>> @JvmOverloads 
 
             value.registerAdapterDataObserver(adapterDataObserver)
             viewPager.adapter = value
-            viewPager.setCurrentItem(1, false)
+            viewPager.setCurrentItem(startPosition, false)
             field = value
         }
     @Orientation
@@ -64,7 +65,7 @@ class BannerView<T, BA : BaseAdapter<T, RecyclerView.ViewHolder>> @JvmOverloads 
                 autoPlay = false
             }
         }
-    private var autoPlay: Boolean = false
+    private var autoPlay: Boolean = DEFAULT_AUTO_PLAY
     private var looper: Looper<T, BA>
     private var intervalTime: Long = DEFAULT_INTERVAL_TIME.toLong()
 
@@ -91,14 +92,17 @@ class BannerView<T, BA : BaseAdapter<T, RecyclerView.ViewHolder>> @JvmOverloads 
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
-            offscreenPageLimit = 2
+            //offscreenPageLimit = 2
             registerOnPageChangeCallback(defaultOnPageChangeCallback)
             setPageTransformer(compositePageTransformer)
         }
-        if (intervalTime >= 100) {
-            SpeedLinearLayoutManager.invoke(viewPager, scrollTime)
-        }
+//        if (intervalTime >= 100) {
+//            SpeedLinearLayoutManager.invoke(viewPager, scrollTime)
+//        }
         viewPager.currentItem = 1
+        (viewPager.getChildAt(0) as RecyclerView?)?.let { recyclerView ->
+            recyclerView.isNestedScrollingEnabled = false
+        }
         addView(viewPager)
 
         attributeSet?.let { attrs ->
@@ -229,6 +233,7 @@ class BannerView<T, BA : BaseAdapter<T, RecyclerView.ViewHolder>> @JvmOverloads 
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        Log.d(TAG, "dispatchTouchEvent: ev=$ev")
         if (viewPager.isUserInputEnabled) {
             when (ev?.actionMasked) {
                 MotionEvent.ACTION_UP or MotionEvent.ACTION_CANCEL or MotionEvent.ACTION_OUTSIDE -> {
@@ -244,6 +249,7 @@ class BannerView<T, BA : BaseAdapter<T, RecyclerView.ViewHolder>> @JvmOverloads 
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
+        Log.d(TAG, "onInterceptTouchEvent: ev=$ev, touchSlop=$touchSlop")
         if (viewPager.isUserInputEnabled && isIntercept) {
             when (ev?.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -261,15 +267,21 @@ class BannerView<T, BA : BaseAdapter<T, RecyclerView.ViewHolder>> @JvmOverloads 
                     } else {
                         distanceY > touchSlop && distanceY > distanceX
                     }
+                    Log.d(TAG, "isViewPagerDragging=$isViewPagerDragging")
                     parent.requestDisallowInterceptTouchEvent(isViewPagerDragging)
                 }
                 MotionEvent.ACTION_UP or MotionEvent.ACTION_CANCEL -> {
-                    parent.requestDisallowInterceptTouchEvent(false)
+                    parent.requestDisallowInterceptTouchEvent(true)
                 }
                 else -> {}
             }
         }
         return super.onInterceptTouchEvent(ev)
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        Log.d(TAG, "onTouchEvent: ev=$event")
+        return super.onTouchEvent(event)
     }
 
     inner class OnBannerPageChangeCallback : OnPageChangeCallback() {
@@ -307,16 +319,11 @@ class BannerView<T, BA : BaseAdapter<T, RecyclerView.ViewHolder>> @JvmOverloads 
                     startPolling()
                 }
             } else if (state == ViewPager.SCROLL_STATE_DRAGGING) {
-                if (autoPlay) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        Log.d(
-                            TAG,
-                            "onPageScrollStateChanged: hasCallbacks=${handler.hasCallbacks(looper)}"
-                        )
-                        if (handler.hasCallbacks(looper)) {
-                            handler.removeCallbacks(looper)
-                            isDragging = true
-                        }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    Log.d(TAG, "onPageScrollStateChanged: hasCallbacks=${handler.hasCallbacks(looper)}")
+                    if (autoPlay && handler.hasCallbacks(looper)) {
+                        handler.removeCallbacks(looper)
+                        isDragging = true
                     }
                 }
             }
@@ -334,5 +341,6 @@ class BannerView<T, BA : BaseAdapter<T, RecyclerView.ViewHolder>> @JvmOverloads 
         const val DEFAULT_IS_LOOP = true
         const val DEFAULT_INCREASE_COUNT = 2
         const val DEFAULT_SCROLL_TIME = 650
+        const val DEFAULT_START_POSITION = 1
     }
 }

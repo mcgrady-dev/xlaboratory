@@ -7,6 +7,8 @@ data class MainItemEntity(val id: Int, val name: String) {
 
     companion object {
         fun getItems(): List<MainItemEntity> = arrayListOf(
+            MainItemEntity(ITEM_NESTED_SCROLL_COLLAPSING_TOOLBAR, "CollapsingToolbarLayout"),
+            MainItemEntity(ITEM_STICKY_RECYCLER_VIEW, "Sticky RecyclerView"),
             MainItemEntity(ITEM_DIALOG_FRAGMENT, "DialogFragment"),
             MainItemEntity(ITEM_CUSTOM_VIEW, "CustomView"),
             MainItemEntity(ITEM_WINDOW_INSETS_CTL, "WindowInsertsController"),
@@ -17,7 +19,6 @@ data class MainItemEntity(val id: Int, val name: String) {
 //            MainItemBean(ITEM_VIEWPAGER_2, "ViewPager2"),
             MainItemEntity(ITEM_TOUCH_EVENT_DISPATCHER_1, "TouchEventDispatcher1"),
             MainItemEntity(ITEM_TOUCH_EVENT_DISPATCHER_2, "TouchEventDispatcher2"),
-            MainItemEntity(ITEM_NESTED_SCROLL_COLLAPSING_TOOLBAR, "CollapsingToolbarLayout"),
         )
 
         const val ITEM_DIALOG_FRAGMENT = 1
@@ -31,5 +32,6 @@ data class MainItemEntity(val id: Int, val name: String) {
         const val ITEM_TOUCH_EVENT_DISPATCHER_1 = 9
         const val ITEM_TOUCH_EVENT_DISPATCHER_2 = 10
         const val ITEM_NESTED_SCROLL_COLLAPSING_TOOLBAR = 11
+        const val ITEM_STICKY_RECYCLER_VIEW = 12
     }
 }

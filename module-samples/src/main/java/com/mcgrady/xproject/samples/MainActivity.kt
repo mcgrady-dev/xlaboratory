@@ -12,6 +12,7 @@ import com.mcgrady.xproject.samples.fragment.SampleFragmentActivity
 import com.mcgrady.xproject.samples.shape.ShapeActivity
 import com.mcgrady.xproject.samples.navigation.WindowInsetsControllerActivity
 import com.mcgrady.xproject.samples.nestedscroll.CollapsingToolbarLayoutActivity
+import com.mcgrady.xproject.samples.nestedscroll.StickyRecyclerViewActivity
 import com.mcgrady.xproject.samples.service.SampleServiceActivity
 import com.mcgrady.xproject.samples.view.CustomViewActivity
 
@@ -53,6 +54,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 MainItemEntity.ITEM_NESTED_SCROLL_COLLAPSING_TOOLBAR -> {
                     startActivity(Intent(this@MainActivity, CollapsingToolbarLayoutActivity::class.java))
+                }
+                MainItemEntity.ITEM_STICKY_RECYCLER_VIEW -> {
+                    startActivity(Intent(this@MainActivity, StickyRecyclerViewActivity::class.java))
                 }
                 else -> {}
             }

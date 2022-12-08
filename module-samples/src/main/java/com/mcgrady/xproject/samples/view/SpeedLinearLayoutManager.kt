@@ -45,7 +45,7 @@ class SpeedLinearLayoutManager(context: Context, var scrollTime: Int, orientatio
                         SpeedLinearLayoutManager(pager.context, intervalTimeMillis, orientation)
 
                     recyclerView.layoutManager = layoutManager
-                    recyclerView.isNestedScrollingEnabled = false
+//                    recyclerView.isNestedScrollingEnabled = false
 
                     val layoutMangerField =
                         ViewPager2::class.java.getDeclaredField("mLayoutManager")

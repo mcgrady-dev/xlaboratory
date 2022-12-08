@@ -2,4 +2,5 @@
 <resources>
     <item name="banner_data_key" type="id"/>
     <item name="banner_pos_key" type="id"/>
+    <item name="sticky_child_recycler_view" type="id" />
 </resources>

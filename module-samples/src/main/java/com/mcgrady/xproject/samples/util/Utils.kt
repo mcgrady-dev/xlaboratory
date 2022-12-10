@@ -5,6 +5,7 @@ import android.graphics.Point
 import android.os.Build
 import android.view.WindowManager
 import androidx.annotation.ColorInt
+import java.util.*
 
 /**
  * Created by mcgrady on 2022/11/26.
@@ -89,6 +90,32 @@ object Utils {
         @ColorInt color: Int, alpha: Float
     ): Int {
         return color and 0x00ffffff or ((alpha * 255.0f + 0.5f).toInt() shl 24)
+    }
+
+
+    private const val SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+    fun randomString(): String {
+        val salt = StringBuilder()
+        val rnd = Random()
+        while (salt.length < 18) { // length of the random string.
+            val index = (rnd.nextFloat() * SALTCHARS.length).toInt()
+            salt.append(SALTCHARS[index])
+        }
+        return salt.toString()
+    }
+
+    fun getRandomString(candidateChars: String = SALTCHARS, length: Int): String {
+        val sb = StringBuilder()
+        val random = Random()
+        for (i in 0 until length) {
+            sb.append(
+                candidateChars[random.nextInt(
+                    candidateChars
+                        .length
+                )]
+            )
+        }
+        return sb.toString()
     }
 
 

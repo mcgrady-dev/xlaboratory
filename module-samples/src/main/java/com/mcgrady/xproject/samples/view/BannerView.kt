@@ -271,7 +271,7 @@ class BannerView<T, BA : BaseAdapter<T, RecyclerView.ViewHolder>> @JvmOverloads 
                     parent.requestDisallowInterceptTouchEvent(isViewPagerDragging)
                 }
                 MotionEvent.ACTION_UP or MotionEvent.ACTION_CANCEL -> {
-                    parent.requestDisallowInterceptTouchEvent(true)
+                    parent.requestDisallowInterceptTouchEvent(false)
                 }
                 else -> {}
             }

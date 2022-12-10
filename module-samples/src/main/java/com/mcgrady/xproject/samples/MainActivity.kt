@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.view.WindowCompat
 import com.mcgrady.xproject.samples.adapter.MainItemAdapter
+import com.mcgrady.xproject.samples.data.DataServer
 import com.mcgrady.xproject.samples.databinding.ActivityMainBinding
 import com.mcgrady.xproject.samples.dialogfragment.FirstDialogFragment
 import com.mcgrady.xproject.samples.entity.MainItemEntity
@@ -30,7 +31,7 @@ class MainActivity : AppCompatActivity() {
 
         val adapter = MainItemAdapter()
         binding.recyclerView.adapter = adapter
-        adapter.submitList(MainItemEntity.getItems())
+        adapter.submitList(DataServer.getMainItemData())
         adapter.setOnItemClickListener { adapter, view, position ->
             val item = adapter.getItem(position) ?: return@setOnItemClickListener
             when (item.id) {

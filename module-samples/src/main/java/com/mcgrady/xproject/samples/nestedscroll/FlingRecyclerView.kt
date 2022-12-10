@@ -2,6 +2,7 @@ package com.mcgrady.xproject.samples.nestedscroll
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import android.widget.OverScroller
 import androidx.recyclerview.widget.RecyclerView
 import java.lang.reflect.Field
@@ -50,6 +51,8 @@ open class FlingRecyclerView @JvmOverloads constructor(
 
     fun stopFling() {
         overScroller?.forceFinished(true)
-        velocityYField?.set(scrollY, 0)
+        scrollerY?.let {
+            velocityYField?.set(it, 0F)
+        }
     }
 }

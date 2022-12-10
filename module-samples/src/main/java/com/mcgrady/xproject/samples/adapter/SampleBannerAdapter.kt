@@ -7,14 +7,13 @@ import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.mcgrady.xproject.samples.base.BaseAdapter
-import com.mcgrady.xproject.samples.entity.BannerEntity
-import com.mcgrady.xproject.samples.base.BaseBannerAdapter
+import com.mcgrady.xproject.samples.data.BannerData
 import com.mcgrady.xproject.samples.drawable.TextDrawable
 
 /**
  * Created by mcgrady on 2022/12/6.
  */
-class SampleBannerAdapter(override var items: List<BannerEntity>) : BaseAdapter<BannerEntity, SampleBannerAdapter.ViewHolder>(items) {
+class SampleBannerAdapter(override var items: List<BannerData>) : BaseAdapter<BannerData, SampleBannerAdapter.ViewHolder>(items) {
 
     override fun onCreateViewHolder(
         context: Context,
@@ -31,7 +30,7 @@ class SampleBannerAdapter(override var items: List<BannerEntity>) : BaseAdapter<
         return ViewHolder(imageView)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int, item: BannerEntity?) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int, item: BannerData?) {
         item?.let {
             holder.imageView.setImageDrawable(
                 TextDrawable.builder()

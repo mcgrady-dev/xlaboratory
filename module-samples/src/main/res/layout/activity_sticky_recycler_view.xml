@@ -6,4 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".nestedscroll.StickyRecyclerViewActivity">
 
+    <com.mcgrady.xproject.samples.nestedscroll.ParentRecyclerView
+        android:id="@+id/parent_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

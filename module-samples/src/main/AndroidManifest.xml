@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ModuleSample">
         <activity
-            android:name=".StickyRecyclerViewActivity"
+            android:name=".nestedscroll.StickyRecyclerViewActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

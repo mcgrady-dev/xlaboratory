@@ -6,44 +6,46 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.mcgrady.xproject.samples.base.BaseAdapter
+import com.mcgrady.xproject.samples.databinding.ItemFunctionViewBinding
 import com.mcgrady.xproject.samples.databinding.ItemMainBinding
 import com.mcgrady.xproject.samples.drawable.TextDrawable
+import com.mcgrady.xproject.samples.entity.FunctionItemEntity
 import com.mcgrady.xproject.samples.entity.MainItemEntity
 import com.mcgrady.xproject.samples.util.Utils
 
 /**
  * Created by mcgrady on 2022/11/24.
  */
-class MainItemAdapter : BaseAdapter<MainItemEntity, MainItemAdapter.ViewHolder>() {
+class FunctionItemAdapter : BaseAdapter<FunctionItemEntity, FunctionItemAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(
         context: Context,
         parent: ViewGroup,
         viewType: Int
     ): ViewHolder {
-        val binding = ItemMainBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemFunctionViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int, item: MainItemEntity?) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int, item: FunctionItemEntity?) {
         item?.let {
             holder.bindTo(it)
         }
     }
 
-    inner class ViewHolder(private val binding: ItemMainBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private val binding: ItemFunctionViewBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bindTo(item: MainItemEntity) {
+        fun bindTo(item: FunctionItemEntity) {
             val drawable = TextDrawable.builder()
                 .beginConfig()
                 .bold()
                 .textColor(Color.WHITE)
                 .toUpperCase()
                 .endConfig()
-                .buildRound(item.drawableText ?: item.name.first().toString(), Utils.getRandomColor(false))
+                .buildRound(item.name.first().toString(), item.color)
 
-            binding.image.setImageDrawable(drawable)
-            binding.name.text = item.name
+            binding.ivIcon.setImageDrawable(drawable)
+            binding.tvName.text = item.name
         }
     }
 }

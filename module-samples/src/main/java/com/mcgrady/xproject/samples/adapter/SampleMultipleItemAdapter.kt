@@ -14,14 +14,10 @@ import com.mcgrady.xproject.samples.databinding.ItemFeatureViewBinding
 import com.mcgrady.xproject.samples.databinding.ItemNewsViewBinding
 import com.mcgrady.xproject.samples.databinding.ItemViewBannerBinding
 import com.mcgrady.xproject.samples.entity.BannerItemEntity
-import com.mcgrady.xproject.samples.entity.BannerItemEntity.Companion.ITEM_BANNER
-import com.mcgrady.xproject.samples.entity.FeatureItemEntity.Companion.ITEM_FEATURE
-import com.mcgrady.xproject.samples.entity.NewsItemEntity.Companion.ITEM_NEWS
-
 /**
  * Created by mcgrady on 2022/11/28.
  */
-class SampleMultipleItemAdapter(data: List<MultiItemEntity>) : BaseMultiItemAdapter<MultiItemEntity>(data) {
+class SampleMultipleItemAdapter : BaseMultiItemAdapter<MultiItemEntity>() {
 
     init {
         addItemType(ITEM_NEWS, object: OnMultiItemAdapterListener<MultiItemEntity, NewsViewHolder> {
@@ -71,6 +67,12 @@ class SampleMultipleItemAdapter(data: List<MultiItemEntity>) : BaseMultiItemAdap
             }
 
         }).onItemViewType { position, list -> list[position].itemType }
+    }
+
+    companion object {
+        const val ITEM_NEWS = 1
+        const val ITEM_FEATURE = 2
+        const val ITEM_BANNER = 3
     }
 
     private inner class NewsViewHolder(val binding: ItemNewsViewBinding) : RecyclerView.ViewHolder(binding.root) {
